@@ -260,7 +260,7 @@ int main() {
 	char input2[256];
 
 	srand(time(NULL));
-	printf(COLOR_BOLD "Advanced Hash Function Program\n" COLOR_RESET);
+	printf(COLOR_BOLD "Hashing Tests\n" COLOR_RESET);
 
 	while (1) {
 		display_menu();
