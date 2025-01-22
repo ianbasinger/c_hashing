@@ -1,17 +1,10 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-
+#include <libraries.h>
 #define COLOR_RESET "\033[0m"
 #define COLOR_GREEN "\033[32m"
 #define COLOR_YELLOW "\033[33m"
 #define COLOR_BLUE "\033[34m"
 #define COLOR_RED "\033[31m"
 #define COLOR_BOLD "\033[1m"
-
 #define MAX_HASHES 100
 #define MAX_COLLISIONS 10
 
@@ -105,29 +98,29 @@ uint32_t advanced_hash_verbose(const char *str, int verbose) {
 	return hash;
 }
 
-void print_progress_bar(size_t current, size_t total) {
-	int progress = (current * 100) / total;
+void progress_b_b(size_t current, size_t total) {
+	int progress_b_b = (current * 100) / total;
 	printf("\r[");
 	for (int i = 0; i < 20; i++) {
-		if (i < progress / 5) {
+		if (i < progress_b_b / 5) {
 			printf("#");
 		} else {
 			printf("-");
 		}
 	}
-	printf("] %d%% (%zu/%zu)", progress, current, total);
+	printf("] %d%% (%zu/%zu)", progress_b_b, current, total);
 	fflush(stdout);
 }
 
-void find_collision() {
+void find_c() {
 	const size_t max_attempts = 1000000;
-	const size_t hash_table_size = 1000003;
-	uint32_t *hash_table = calloc(hash_table_size, sizeof(uint32_t));
-	char (*strings)[17] = calloc(hash_table_size, sizeof(char[17]));
+	const size_t hash_t_size = 1000003;
+	uint32_t *hash_t = calloc(hash_t_size, sizeof(uint32_t));
+	char (*strings)[17] = calloc(hash_t_size, sizeof(char[17]));
 
-	if (!hash_table || !strings) {
+	if (!hash_t || !strings) {
 		printf(COLOR_RED "Memory allocation failed.\n" COLOR_RESET);
-		free(hash_table);
+		free(hash_t);
 		free(strings);
 		return;
 	}
@@ -147,8 +140,8 @@ void find_collision() {
 		printf(COLOR_BLUE "\nAttempt %zu: Current String: %s\n" COLOR_RESET, attempt + 1, str);
 		uint32_t hash = advanced_hash_verbose(str, 1);
 
-		uint32_t index = hash % hash_table_size;
-		if (hash_table[index] != 0 && strcmp(strings[index], str) != 0) {
+		uint32_t index = hash % hash_t_size;
+		if (hash_t[index] != 0 && strcmp(strings[index], str) != 0) {
 			printf(COLOR_GREEN "\nCollision found!\n" COLOR_RESET);
 			printf(COLOR_BOLD "String 1: %s | String 2: %s | Hash: %u\n" COLOR_RESET, str, strings[index], hash);
 
@@ -160,30 +153,29 @@ void find_collision() {
 
 			total_collisions++;
 
-			free(hash_table);
+			free(hash_t);
 			free(strings);
 			return;
 		}
 
-		hash_table[index] = hash;
+		hash_t[index] = hash;
 		strcpy(strings[index], str);
 
 		attempt++;
 
 		if (attempt % 100 == 0) {
-			print_progress_bar(attempt, max_attempts);
+			progress_b_b(attempt, max_attempts);
 		}
 
 		usleep(100);
 	}
 
 	printf(COLOR_RED "\nNo collision found within %zu attempts.\n" COLOR_RESET, max_attempts);
-
-	free(hash_table);
+	free(hash_t);
 	free(strings);
 }
 
-void reverse_lookup(uint32_t target_hash) {
+void rev_look(uint32_t target_hash) {
 	const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	const size_t charset_size = sizeof(charset) - 1;
 	const size_t max_length = 5;
@@ -225,7 +217,7 @@ void reverse_lookup(uint32_t target_hash) {
 	printf(COLOR_RED "\nNo string found for the given hash within the maximum length of %zu characters.\n" COLOR_RESET, max_length);
 }
 
-void save_results() {
+void save() {
 	FILE *file = fopen("hash_results.txt", "w");
 	if (!file) {
 		printf(COLOR_RED "Error saving results to file.\n" COLOR_RESET);
@@ -243,7 +235,7 @@ void save_results() {
 	printf(COLOR_GREEN "Results saved to 'hash_results.txt'.\n" COLOR_RESET);
 }
 
-void display_menu() {
+void display() {
 	printf("\n1. Hash a string");
 	printf("\n2. Compare two strings");
 	printf("\n3. Find a collision");
@@ -263,7 +255,7 @@ int main() {
 	printf(COLOR_BOLD "Hashing Tests\n" COLOR_RESET);
 
 	while (1) {
-		display_menu();
+		display();
 
 		int choice;
 		scanf("%d", &choice);
@@ -301,7 +293,7 @@ int main() {
 				break;
 
 			case 3:
-				find_collision();
+				find_c();
 				break;
 
 			case 4:
@@ -309,7 +301,7 @@ int main() {
 				uint32_t target_hash;
 				scanf("%u", &target_hash);
 				getchar();
-				reverse_lookup(target_hash);
+				rev_look(target_hash);
 				break;
 
 			case 5:
@@ -334,7 +326,7 @@ int main() {
 				break;
 
 			case 7:
-				save_results();
+				save();
 				break;
 
 			case 8:
